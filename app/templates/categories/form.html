@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block breadcrumb %}<a href="{{ url_for('categorias.index') }}">Categorias</a> / {{ title }}{% endblock %}
+{% block page_styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/categories.css') }}">
+{% endblock %}
+{% block content %}
+  <section class="categories-heading">
+    <div>
+      <span class="eyebrow"><span class="eyebrow-dot"></span>ORGANIZAÇÃO DO ESTOQUE</span>
+      <h1>{{ title }}</h1>
+      <p>Defina o nome, a descrição e a disponibilidade da categoria.</p>
+    </div>
+    <a class="button-secondary" href="{{ url_for('categorias.index', status='todas') }}">Voltar às categorias</a>
+  </section>
+  <section class="category-form-panel panel">
+    <form method="post">
+      {{ form.hidden_tag() }}
+      <div class="form-field">
+        {{ form.nome.label }} <span class="required-mark">*</span>
+        {{ form.nome(class_="form-control", maxlength="120", placeholder="Ex.: Eletrônicos") }}
+        {% for error in form.nome.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+      </div>
+      <div class="form-field">
+        {{ form.descricao.label }}
+        {{ form.descricao(class_="form-control", maxlength="500", rows="4", placeholder="Descreva quais produtos pertencem a esta categoria") }}
+        {% for error in form.descricao.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+        <span class="field-hint">Até 500 caracteres.</span>
+      </div>
+      <div class="form-field">
+        {{ form.ativo.label }}
+        {{ form.ativo(class_="form-control form-select") }}
+        {% for error in form.ativo.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+      </div>
+      <div class="category-form-note">Desativar uma categoria preserva seus produtos e impede que ela seja selecionada em novos cadastros.</div>
+      <div class="product-form-actions">
+        <a class="button-secondary" href="{{ url_for('categorias.index', status='todas') }}">Cancelar</a>
+        {{ form.submit(class_="button-primary") }}
+      </div>
+    </form>
+  </section>
+{% endblock %}

@@ -1,0 +1,49 @@
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html { min-width: 320px; background: var(--color-bg); scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, select, textarea { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+a { color: inherit; text-decoration: none; }
+button { color: inherit; }
+svg { display: block; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.icon-library { position: absolute; width: 0; height: 0; overflow: hidden; }
+.sr-only { position: fixed; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; border: 0; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
+
+.form-control {
+  width: 100%;
+  min-height: 43px;
+  padding: 0 12px;
+  border: 1px solid #2c3930;
+  border-radius: 8px;
+  outline: none;
+  background: #141c17;
+  color: var(--color-text);
+  font-size: 12px;
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+.form-control::placeholder { color: #65736a; }
+.form-control:focus { border-color: rgb(57 217 138 / 65%); box-shadow: 0 0 0 3px rgb(57 217 138 / 9%); }
+.form-control[aria-invalid="true"], .form-control.is-invalid { border-color: var(--color-danger); }
+.form-control[aria-invalid="true"]:focus, .form-control.is-invalid:focus { box-shadow: 0 0 0 3px rgb(255 119 119 / 10%); }
+.form-select { color: var(--color-text); }
+.field-error { display: block; margin-top: 5px; color: #ff9999; font-size: 10px; line-height: 1.4; }
+
+:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
+
+::selection { color: #07140d; background: var(--color-primary); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}

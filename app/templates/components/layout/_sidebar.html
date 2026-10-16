@@ -1,0 +1,45 @@
+<aside class="sidebar" id="app-sidebar" aria-label="Navegação principal">
+  <a class="brand" href="{{ url_for('dashboard.index') }}" aria-label="StockFlow, início">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="m4 7 8-4 8 4v10l-8 4-8-4V7Z"/><path d="m4 7 8 4 8-4M12 11v10"/></svg>
+    </span>
+    <span class="brand-name">Stock<span>Flow</span></span>
+    <span class="brand-caption">GESTÃO DE ESTOQUE</span>
+  </a>
+
+  <div class="sidebar-section-label">MENU PRINCIPAL</div>
+  <nav class="sidebar-nav">
+    <a class="nav-link{% if request.endpoint == 'dashboard.index' %} is-active{% endif %}" title="Dashboard"
+       href="{{ url_for('dashboard.index') }}"{% if request.endpoint == 'dashboard.index' %} aria-current="page"{% endif %}>
+      <svg class="nav-icon"><use href="#icon-home"/></svg><span>Dashboard</span>
+    </a>
+    <a class="nav-link{% if request.blueprint == 'produtos' %} is-active{% endif %}" title="Produtos"
+       href="{{ url_for('produtos.index') }}"{% if request.blueprint == 'produtos' %} aria-current="page"{% endif %}>
+      <svg class="nav-icon"><use href="#icon-box"/></svg><span>Produtos</span>
+    </a>
+    <a class="nav-link{% if request.blueprint == 'categorias' %} is-active{% endif %}" title="Categorias"
+       href="{{ url_for('categorias.index') }}"{% if request.blueprint == 'categorias' %} aria-current="page"{% endif %}>
+      <svg class="nav-icon"><use href="#icon-grid"/></svg><span>Categorias</span>
+    </a>
+    <a class="nav-link{% if request.blueprint == 'movimentacoes' or request.blueprint == 'stock_api' %} is-active{% endif %}" title="Movimentações"
+       href="{{ url_for('movimentacoes.index') }}"{% if request.blueprint == 'movimentacoes' or request.blueprint == 'stock_api' %} aria-current="page"{% endif %}>
+      <svg class="nav-icon"><use href="#icon-activity"/></svg><span>Movimentações</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <div class="sidebar-help">
+      <span class="help-indicator"></span>
+      <div><strong>Estoque em dia</strong><span>Seu negócio, sob controle.</span></div>
+    </div>
+    <div class="sidebar-profile">
+      <span class="profile-avatar" aria-hidden="true">SF</span>
+      <span class="profile-copy"><strong>Seu negócio</strong><span>Painel de controle</span></span>
+      <span class="profile-status" aria-label="Online"></span>
+    </div>
+    <form class="sidebar-logout" method="post" action="{{ url_for('auth.logout') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" title="Sair da conta">Sair da conta</button>
+    </form>
+  </div>
+</aside>

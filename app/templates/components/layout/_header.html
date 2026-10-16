@@ -1,0 +1,26 @@
+<header class="topbar">
+  <div class="topbar-leading">
+    <button class="icon-button menu-toggle" type="button" aria-label="Abrir menu"
+            aria-controls="app-sidebar" aria-expanded="false" data-sidebar-toggle>
+      <svg class="menu-open-icon"><use href="#icon-menu"/></svg>
+      <svg class="menu-close-icon"><use href="#icon-close"/></svg>
+    </button>
+    <button class="icon-button compact-sidebar-toggle" type="button" aria-label="Recolher menu"
+            aria-controls="app-sidebar" aria-expanded="true" data-sidebar-collapse-toggle>
+      <svg><use href="#icon-menu"/></svg>
+    </button>
+    <div class="breadcrumb"><span>StockFlow</span><svg><use href="#icon-chevron"/></svg><strong>{% block breadcrumb %}Visão geral{% endblock %}</strong></div>
+  </div>
+  <div class="topbar-actions">
+    <label class="search-box">
+      <svg><use href="#icon-search"/></svg>
+      <input type="search" placeholder="Buscar no estoque..." aria-label="Buscar no estoque">
+      <kbd>⌘ K</kbd>
+    </label>
+    <button class="icon-button notification-button" type="button" aria-label="Notificações">
+      <svg><use href="#icon-bell"/></svg><span class="notification-dot"></span>
+    </button>
+    <span class="topbar-divider"></span>
+    <span class="topbar-user-avatar" aria-label="Perfil do negócio">SF</span>
+  </div>
+</header>

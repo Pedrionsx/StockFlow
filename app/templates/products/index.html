@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Produtos{% endblock %}
+{% block breadcrumb %}Produtos{% endblock %}
+{% block page_styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/products.css') }}">
+{% endblock %}
+{% block content %}
+  <section class="products-heading">
+    <div>
+      <span class="eyebrow"><span class="eyebrow-dot"></span>CATÁLOGO</span>
+      <h1>Produtos</h1>
+      <p>Gerencie os itens e acompanhe os níveis do seu estoque.</p>
+    </div>
+    <a class="button-primary products-add-button" href="{{ url_for('produtos.create') }}"><span aria-hidden="true">+</span> Novo produto</a>
+  </section>
+
+  <section class="products-panel panel">
+    <div class="products-toolbar">
+      <div class="product-tabs" aria-label="Filtrar produtos por status">
+        <a class="product-tab{% if status == 'ativos' %} is-active{% endif %}" href="{{ url_for('produtos.index', status='ativos', q=search, categoria_id=category_id) }}">Ativos <span>{{ counts.ativos }}</span></a>
+        <a class="product-tab{% if status == 'inativos' %} is-active{% endif %}" href="{{ url_for('produtos.index', status='inativos', q=search, categoria_id=category_id) }}">Inativos <span>{{ counts.inativos }}</span></a>
+        <a class="product-tab{% if status == 'todos' %} is-active{% endif %}" href="{{ url_for('produtos.index', status='todos', q=search, categoria_id=category_id) }}">Todos</a>
+      </div>
+      {% if category_id %}<a class="category-filter-chip" href="{{ url_for('produtos.index', status=status, q=search) }}">Categoria filtrada <span aria-hidden="true">&times;</span></a>{% endif %}
+      <div class="product-search">
+        <svg><use href="#icon-search"/></svg>
+        <input type="search" id="product-search-input" value="{{ search }}" placeholder="Buscar por nome, código ou categoria..." aria-label="Buscar produtos" aria-controls="products-table-body">
+        <button type="button" id="product-search-clear" aria-label="Limpar busca" hidden>&times;</button>
+      </div>
+    </div>
+
+    <div class="table-scroll">
+      <table class="data-table products-table">
+        <thead>
+          <tr>
+            <th scope="col">Produto</th>
+            <th scope="col">Código de barras</th>
+            <th scope="col">Categoria</th>
+            <th scope="col">Preço de venda</th>
+            <th scope="col">Estoque</th>
+            <th scope="col">Status</th>
+            <th scope="col"><span class="sr-only">Ações</span></th>
+          </tr>
+        </thead>
+        <tbody id="products-table-body">
+          {% for product in products %}
+            <tr data-product-row
+                data-search="{{ (product.nome ~ ' ' ~ product.codigo_barras ~ ' ' ~ product.categoria.nome)|lower }}"
+                data-product-id="{{ product.id }}"
+                data-quantity="{{ product.quantidade }}"
+                data-minimum="{{ product.estoque_minimo }}"
+                data-active="{{ 'true' if product.ativo else 'false' }}">
+              <td class="product-name-cell"><span class="product-list-icon"><svg><use href="#icon-box"/></svg></span><strong>{{ product.nome }}</strong></td>
+              <td>{{ product.codigo_barras }}</td>
+              <td>{{ product.categoria.nome }}</td>
+              <td class="product-price">R$ {{ "{:,.2f}".format(product.preco_venda).replace(",", "X").replace(".", ",").replace("X", ".") }}</td>
+              <td><span class="product-quantity{% if product.quantidade <= product.estoque_minimo %} is-low{% endif %}" data-product-quantity>{{ product.quantidade }} un.</span></td>
+              <td><span class="status-badge{% if not product.ativo %} is-inactive{% endif %}"><i></i>{{ "Ativo" if product.ativo else "Inativo" }}</span></td>
+              <td class="product-actions"><div class="product-action-group">
+                  {% if product.ativo %}
+                    <button class="table-action stock-action" type="button" data-modal-open="stock-movement-modal"
+                            data-movement-type="ENTRADA" data-product-id="{{ product.id }}"
+                            data-product-name="{{ product.nome }}" data-product-code="{{ product.codigo_barras }}"
+                            data-product-quantity="{{ product.quantidade }}" data-product-minimum="{{ product.estoque_minimo }}">Entrada</button>
+                    <button class="table-action stock-action is-danger" type="button" data-modal-open="stock-movement-modal"
+                            data-movement-type="SAIDA" data-product-id="{{ product.id }}"
+                            data-product-name="{{ product.nome }}" data-product-code="{{ product.codigo_barras }}"
+                            data-product-quantity="{{ product.quantidade }}" data-product-minimum="{{ product.estoque_minimo }}">Saída</button>
+                  {% endif %}
+                  <a class="table-action" href="{{ url_for('produtos.edit', product_id=product.id) }}">Editar</a>
+                  <form method="post" action="{{ url_for('produtos.toggle_status', product_id=product.id) }}" onsubmit="return confirm('Deseja {{ 'inativar' if product.ativo else 'reativar' }} este produto?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="status" value="{{ status }}">
+                    <button class="table-action{% if product.ativo %} is-danger{% endif %}" type="submit">{{ "Inativar" if product.ativo else "Reativar" }}</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+          <tr id="products-empty-row"{% if products %} hidden{% endif %}><td class="products-empty" colspan="7">
+            <span class="empty-icon"><svg><use href="#icon-box"/></svg></span>
+            <strong id="products-empty-title">{% if search %}Nenhum resultado encontrado{% else %}Nenhum produto encontrado{% endif %}</strong>
+            <span id="products-empty-message">{% if search %}Tente outro nome, código de barras ou categoria.{% elif status == 'ativos' %}Cadastre seu primeiro produto para começar.{% else %}Não há produtos nesta visualização.{% endif %}</span>
+            {% if not search and status == "ativos" %}<a class="text-link" href="{{ url_for('produtos.create') }}">Cadastrar produto <svg><use href="#icon-chevron"/></svg></a>{% endif %}
+          </td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="products-footer"><span id="products-result-count" aria-live="polite">{{ products|length }} {{ "produto encontrado" if products|length == 1 else "produtos encontrados" }}</span><span>Preços em reais (BRL)</span></div>
+  </section>
+  {% include "components/ui/_stock_movement_modal.html" %}
+{% endblock %}
+{% block page_scripts %}
+  <script src="{{ url_for('static', filename='js/components/modal.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/components/search.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/pages/products.js') }}" defer></script>
+{% endblock %}

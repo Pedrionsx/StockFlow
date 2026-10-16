@@ -1,0 +1,8 @@
+{% extends "errors/error.html" %}
+{% block title %}Erro interno{% endblock %}
+{% block breadcrumb %}Erro interno{% endblock %}
+{% block content %}
+  {% with code=500, title="Erro interno", message="Ocorreu um erro inesperado. Tente novamente mais tarde." %}
+    {{ super() }}
+  {% endwith %}
+{% endblock %}

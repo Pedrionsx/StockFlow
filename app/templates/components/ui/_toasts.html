@@ -1,0 +1,5 @@
+{% if messages %}
+  {% for category, message in messages %}
+    <div data-toast-initial data-toast-type="{{ category }}" data-toast-message="{{ message }}"></div>
+  {% endfor %}
+{% endif %}

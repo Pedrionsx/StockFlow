@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Categorias{% endblock %}
+{% block breadcrumb %}Categorias{% endblock %}
+{% block page_styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/categories.css') }}">
+{% endblock %}
+{% block content %}
+  <section class="categories-heading">
+    <div>
+      <span class="eyebrow"><span class="eyebrow-dot"></span>ORGANIZAÇÃO DO ESTOQUE</span>
+      <h1>Categorias</h1>
+      <p>Organize seus produtos por grupos.</p>
+    </div>
+    <a class="button-primary categories-add-button" href="{{ url_for('categorias.create') }}"><span aria-hidden="true">+</span> Nova categoria</a>
+  </section>
+
+  <section class="category-metrics" aria-label="Resumo de categorias">
+    <article class="category-metric panel">
+      <span class="category-metric-icon"><svg><use href="#icon-grid"/></svg></span>
+      <div><strong>{{ counts.ativas }}</strong><span>Categorias ativas</span></div>
+    </article>
+    <article class="category-metric panel">
+      <span class="category-metric-icon is-blue"><svg><use href="#icon-box"/></svg></span>
+      <div><strong>{{ counts.categorizados }}</strong><span>Produtos categorizados</span></div>
+    </article>
+    <article class="category-metric panel">
+      <span class="category-metric-icon is-amber"><svg><use href="#icon-alert"/></svg></span>
+      <div><strong>{{ counts.sem_categoria }}</strong><span>Sem categoria</span></div>
+    </article>
+  </section>
+
+  <section class="categories-panel panel">
+    <div class="categories-toolbar">
+      <nav class="category-tabs" aria-label="Filtrar categorias por status">
+        <a class="category-tab{% if status == 'ativas' %} is-active{% endif %}" href="{{ url_for('categorias.index', status='ativas', q=search, sort=sort, direction=direction) }}">Ativas <span>{{ counts.ativas }}</span></a>
+        <a class="category-tab{% if status == 'inativas' %} is-active{% endif %}" href="{{ url_for('categorias.index', status='inativas', q=search, sort=sort, direction=direction) }}">Inativas <span>{{ counts.inativas }}</span></a>
+        <a class="category-tab{% if status == 'todas' %} is-active{% endif %}" href="{{ url_for('categorias.index', status='todas', q=search, sort=sort, direction=direction) }}">Todas <span>{{ counts.total }}</span></a>
+      </nav>
+      <form class="category-search" method="get">
+        <input type="hidden" name="status" value="{{ status }}">
+        <input type="hidden" name="sort" value="{{ sort }}">
+        <input type="hidden" name="direction" value="{{ direction }}">
+        <svg aria-hidden="true"><use href="#icon-search"/></svg>
+        <input type="search" name="q" value="{{ search }}" placeholder="Buscar categoria..." aria-label="Buscar por nome ou descrição">
+        {% if search %}<a href="{{ url_for('categorias.index', status=status, sort=sort, direction=direction) }}" aria-label="Limpar busca">&times;</a>{% endif %}
+      </form>
+    </div>
+
+    <div class="table-scroll">
+      <table class="data-table categories-table">
+        <thead><tr>
+          <th scope="col"><a class="category-sort" href="{{ url_for('categorias.index', status=status, q=search, sort='nome', direction='desc' if sort == 'nome' and direction == 'asc' else 'asc') }}">Categoria{% if sort == 'nome' %}<span aria-hidden="true">{{ '↑' if direction == 'asc' else '↓' }}</span>{% endif %}</a></th>
+          <th scope="col">Descrição</th>
+          <th scope="col"><a class="category-sort" href="{{ url_for('categorias.index', status=status, q=search, sort='produtos', direction='desc' if sort == 'produtos' and direction == 'asc' else 'asc') }}">Produtos (un.){% if sort == 'produtos' %}<span aria-hidden="true">{{ '↑' if direction == 'asc' else '↓' }}</span>{% endif %}</a></th>
+          <th scope="col">Status</th>
+          <th scope="col"><span class="sr-only">Ações</span></th>
+        </tr></thead>
+        <tbody>
+          {% for category, product_count in categories %}
+            <tr>
+              <td class="category-name-cell"><span class="category-list-icon"><svg><use href="#icon-grid"/></svg></span><strong>{{ category.nome }}</strong></td>
+              <td class="category-description">{{ category.descricao or "—" }}</td>
+              <td><a class="category-product-count" href="{{ url_for('produtos.index', status='todos', categoria_id=category.id) }}" aria-label="Ver {{ product_count }} produtos de {{ category.nome }}">{{ product_count }}</a></td>
+              <td><span class="status-badge{% if not category.ativo %} is-inactive{% endif %}"><i></i>{{ "Ativa" if category.ativo else "Inativa" }}</span></td>
+              <td class="category-actions"><div class="category-action-group">
+                  <a class="table-action" href="{{ url_for('categorias.edit', category_id=category.id) }}">Editar</a>
+                  <form method="post" action="{{ url_for('categorias.toggle_status', category_id=category.id) }}" onsubmit="return confirm('Deseja {{ 'desativar' if category.ativo else 'reativar' }} esta categoria?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="status" value="{{ status }}">
+                    <button class="table-action{% if category.ativo %} is-danger{% endif %}" type="submit">{{ "Desativar" if category.ativo else "Reativar" }}</button>
+                  </form>
+                  {% if product_count == 0 %}
+                    <form method="post" action="{{ url_for('categorias.delete', category_id=category.id) }}" onsubmit="return confirm('Excluir permanentemente a categoria {{ category.nome }}?');">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                      <input type="hidden" name="status" value="{{ status }}">
+                      <button class="table-action is-danger" type="submit">Excluir</button>
+                    </form>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+          {% else %}
+            <tr><td class="categories-empty" colspan="5">
+              <span class="empty-icon"><svg><use href="#icon-grid"/></svg></span>
+              <strong>{{ "Nenhuma categoria encontrada" if search or status != "ativas" else "Nenhuma categoria cadastrada" }}</strong>
+              <span>{% if search %}Tente outro nome ou descrição.{% elif status == "ativas" %}Cadastre uma categoria para começar a organizar os produtos.{% else %}Não há categorias nesta visualização.{% endif %}</span>
+              {% if not search and status == "ativas" %}<a class="text-link" href="{{ url_for('categorias.create') }}">Cadastrar categoria <svg><use href="#icon-chevron"/></svg></a>{% endif %}
+            </td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="categories-footer"><span>{{ categories|length }} {{ "categoria encontrada" if categories|length == 1 else "categorias encontradas" }}</span><span>Produtos associados preservados ao desativar</span></div>
+  </section>
+{% endblock %}

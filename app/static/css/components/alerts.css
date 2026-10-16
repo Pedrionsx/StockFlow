@@ -1,0 +1,6 @@
+.flash-stack { display: grid; gap: 9px; margin-bottom: 22px; }
+.flash-alert { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 15px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-surface); color: var(--color-text); font-size: 12px; }
+.flash-alert--success { border-color: rgb(57 217 138 / 25%); background: rgb(57 217 138 / 7%); }
+.flash-alert--error, .flash-alert--danger { border-color: rgb(255 119 119 / 25%); background: rgb(255 119 119 / 7%); }
+.flash-alert--warning { border-color: rgb(244 188 88 / 25%); background: rgb(244 188 88 / 7%); }
+.flash-alert__close { border: 0; background: transparent; color: var(--color-text-secondary); font-size: 20px; line-height: 1; cursor: pointer; }

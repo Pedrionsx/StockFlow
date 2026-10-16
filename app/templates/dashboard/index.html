@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block breadcrumb %}Visão geral{% endblock %}
+{% block page_styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/dashboard.css') }}">
+{% endblock %}
+{% block content %}
+  <section class="dashboard-intro">
+    <div>
+      <div class="eyebrow"><span class="eyebrow-dot"></span>PAINEL DE CONTROLE</div>
+      <h1>Bom dia, <span>vamos organizar?</span></h1>
+      <p>Acompanhe o que está acontecendo com o seu estoque.</p>
+    </div>
+    {% if dashboard %}
+      <div class="date-chip"><svg><use href="#icon-clock"/></svg><span>{{ dashboard.data_referencia.strftime("%d/%m/%Y") }}</span></div>
+    {% endif %}
+  </section>
+
+  {% if dashboard_error %}
+    <section class="dashboard-error panel" role="alert">
+      <svg><use href="#icon-alert"/></svg>
+      <div><strong>Indicadores indisponíveis</strong><span>Não foi possível consultar o estoque. Tente novamente em instantes.</span></div>
+      <a class="text-link" href="{{ url_for('dashboard.index') }}">Tentar novamente</a>
+    </section>
+  {% else %}
+    <section class="summary-grid" aria-label="Resumo do estoque">
+      {% set label = "Valor de custo em estoque" %}{% set value = dashboard.valor_total_estoque|brl %}{% set icon = "grid" %}{% set change = none %}{% set change_direction = "up" %}{% set hint = "produtos ativos" %}{% set accent = "blue" %}{% include "components/ui/_card.html" %}
+      {% set label = "Itens cadastrados" %}{% set value = dashboard.total_produtos %}{% set icon = "box" %}{% set change = none %}{% set change_direction = "up" %}{% set hint = "produtos ativos" %}{% set accent = "green" %}{% include "components/ui/_card.html" %}
+      {% set label = "Estoque baixo" %}{% set value = dashboard.produtos_estoque_baixo %}{% set icon = "alert" %}{% set change = none %}{% set change_direction = "up" %}{% set hint = "no mínimo ou abaixo" %}{% set accent = "amber" %}{% include "components/ui/_card.html" %}
+      {% set label = "Movimentações do dia" %}{% set value = dashboard.movimentacoes_do_dia %}{% set icon = "activity" %}{% set change = none %}{% set change_direction = "up" %}{% set hint = "registros de hoje" %}{% set accent = "violet" %}{% include "components/ui/_card.html" %}
+    </section>
+
+    <section class="dashboard-grid">
+      <article class="panel attention-panel dashboard-attention">
+        <div class="panel-heading">
+          <div><span class="panel-kicker">AÇÃO NECESSÁRIA</span><h2>Estoque baixo</h2></div>
+          <span class="attention-count">{{ dashboard.produtos_estoque_baixo }}</span>
+        </div>
+        <p class="panel-description">Produtos ativos no estoque mínimo ou abaixo dele.</p>
+        {% if dashboard.produtos_com_estoque_baixo %}
+          <div class="attention-list">
+            {% for product in dashboard.produtos_com_estoque_baixo %}
+              <div class="attention-item">
+                <span class="product-thumb{% if product.quantidade == 0 %} thumb--critical{% else %} thumb--green{% endif %}" aria-hidden="true">
+                  <svg><use href="#icon-box"/></svg>
+                </span>
+                <span class="attention-product">
+                  <strong>{{ product.nome }}</strong>
+                  <span>{{ product.categoria.nome }} · {{ product.codigo_barras }}</span>
+                </span>
+                <span class="stock-level{% if product.quantidade == 0 %} stock-level--critical{% else %} stock-level--warning{% endif %}">
+                  {% if product.quantidade == 0 %}Esgotado{% else %}Estoque baixo{% endif %}
+                  <span>{{ product.quantidade }} un. · mín. {{ product.estoque_minimo }}</span>
+                </span>
+              </div>
+            {% endfor %}
+          </div>
+          <a class="text-link" href="{{ url_for('produtos.index', status='ativos') }}">{% if dashboard.mais_produtos_estoque_baixo %}Ver todos os {{ dashboard.produtos_estoque_baixo }} produtos{% else %}Consultar produtos{% endif %} <svg><use href="#icon-chevron"/></svg></a>
+        {% else %}
+          <div class="attention-empty">
+            <span class="attention-empty-icon"><svg><use href="#icon-grid"/></svg></span>
+            <strong>Estoque em dia</strong>
+            <span>Nenhum produto ativo atingiu o estoque mínimo.</span>
+          </div>
+        {% endif %}
+      </article>
+
+      <article class="panel dashboard-stock-note">
+        <div class="panel-heading">
+          <div><span class="panel-kicker">VALORAÇÃO</span><h2>Posição do estoque</h2></div>
+          <span class="summary-card__icon summary-card--blue"><svg><use href="#icon-grid"/></svg></span>
+        </div>
+        <p class="stock-note-value">{{ dashboard.valor_total_estoque|brl }}</p>
+        <p class="stock-note-label">Custo estimado dos produtos ativos em estoque.</p>
+        <div class="stock-note-divider"></div>
+        <div class="stock-note-detail"><span>Produtos ativos</span><strong>{{ dashboard.total_produtos }}</strong></div>
+        <div class="stock-note-detail"><span>Precisam de reposição</span><strong>{{ dashboard.produtos_estoque_baixo }}</strong></div>
+        <a class="text-link stock-note-link" href="{{ url_for('produtos.index') }}">Gerenciar catálogo <svg><use href="#icon-chevron"/></svg></a>
+      </article>
+    </section>
+
+    <section class="panel movements-panel">
+      <div class="panel-heading">
+        <div><span class="panel-kicker">ATIVIDADE RECENTE</span><h2>Últimas movimentações</h2></div>
+        <a class="text-link" href="{{ url_for('movimentacoes.index') }}">Ver todas <svg><use href="#icon-chevron"/></svg></a>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr>
+            <th scope="col">Produto</th><th scope="col">Código</th><th scope="col">Tipo</th>
+            <th scope="col">Quantidade</th><th scope="col">Data e hora</th><th scope="col">Responsável</th>
+          </tr></thead>
+          <tbody>
+            {% for movement in dashboard.movimentacoes_recentes %}
+              <tr>
+                <td>{{ movement.produto }}</td>
+                <td>{{ movement.codigo_barras }}</td>
+                <td>{{ "Entrada" if movement.tipo == "ENTRADA" else "Saída" }}</td>
+                <td>{{ "+" if movement.tipo == "ENTRADA" else "−" }} {{ movement.quantidade }} un.</td>
+                <td>{{ movement.data.strftime("%d/%m/%Y %H:%M") }}</td>
+                <td>{{ movement.usuario }}</td>
+              </tr>
+            {% else %}
+              <tr><td class="table-empty" colspan="6">Ainda não há movimentações registradas.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  {% endif %}
+{% endblock %}

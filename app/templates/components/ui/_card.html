@@ -1,0 +1,17 @@
+<article class="summary-card{% if accent %} summary-card--{{ accent }}{% endif %}">
+  <div class="summary-card__top">
+    <span class="summary-card__label">{{ label }}</span>
+    <span class="summary-card__icon" aria-hidden="true">
+      <svg><use href="#icon-{{ icon }}"/></svg>
+    </span>
+  </div>
+  <div class="summary-card__value">{{ value }}</div>
+  <div class="summary-card__footer">
+    {% if change %}
+      <span class="summary-card__change{% if change_direction == 'down' %} is-down{% endif %}">
+        <svg><use href="#icon-arrow-{{ change_direction or 'up' }}"/></svg>{{ change }}
+      </span>
+    {% endif %}
+    <span class="summary-card__hint">{{ hint }}</span>
+  </div>
+</article>

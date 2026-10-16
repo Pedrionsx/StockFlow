@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block breadcrumb %}{{ title }}{% endblock %}
+{% block page_styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/products.css') }}">
+{% endblock %}
+{% block content %}
+  <section class="products-heading">
+    <div>
+      <span class="eyebrow"><span class="eyebrow-dot"></span>CATÁLOGO</span>
+      <h1>{{ title }}</h1>
+      <p>Preencha os dados do produto. Os campos marcados são obrigatórios.</p>
+    </div>
+    <a class="button-secondary" href="{{ url_for('produtos.index', status='todos') }}">Voltar aos produtos</a>
+  </section>
+
+  <section class="product-form-panel panel">
+    <form method="post">
+      {{ form.hidden_tag() }}
+      <div class="product-form-section">
+        <div class="form-section-heading"><span>01</span><div><h2>Informações do produto</h2><p>Identifique o produto no seu catálogo.</p></div></div>
+        <div class="product-form-grid">
+          <div class="form-field form-field--wide">
+            {{ form.nome.label }} <span class="required-mark">*</span>
+            {{ form.nome(class_="form-control", maxlength="160", placeholder="Ex.: Teclado mecânico") }}
+            {% for error in form.nome.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+          </div>
+          <div class="form-field">
+            {{ form.codigo_barras.label }} <span class="required-mark">*</span>
+            {{ form.codigo_barras(class_="form-control", maxlength="64", placeholder="Digite o código") }}
+            {% for error in form.codigo_barras.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+          </div>
+          <div class="form-field">
+            {{ form.categoria_id.label }} <span class="required-mark">*</span>
+            {{ form.categoria_id(class_="form-control form-select") }}
+            {% for error in form.categoria_id.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="product-form-section">
+        <div class="form-section-heading"><span>02</span><div><h2>Preços e estoque</h2><p>Valores em reais e quantidades em unidades.</p></div></div>
+        <div class="product-form-grid">
+          <div class="form-field">
+            {{ form.preco_custo.label }} <span class="required-mark">*</span>
+            <div class="input-prefix"><span>R$</span>{{ form.preco_custo(class_="form-control", min="0", step="0.01", placeholder="0,00") }}</div>
+            {% for error in form.preco_custo.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+          </div>
+          <div class="form-field">
+            {{ form.preco_venda.label }} <span class="required-mark">*</span>
+            <div class="input-prefix"><span>R$</span>{{ form.preco_venda(class_="form-control", min="0", step="0.01", placeholder="0,00") }}</div>
+            {% for error in form.preco_venda.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+          </div>
+          <div class="form-field">
+            {{ form.quantidade.label }} <span class="required-mark">*</span>
+            {{ form.quantidade(class_="form-control", min="0", step="1", placeholder="0") }}
+            {% for error in form.quantidade.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+          </div>
+          <div class="form-field">
+            {{ form.estoque_minimo.label }} <span class="required-mark">*</span>
+            {{ form.estoque_minimo(class_="form-control", min="0", step="1", placeholder="0") }}
+            {% for error in form.estoque_minimo.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="product-form-actions">
+        <a class="button-secondary" href="{{ url_for('produtos.index', status='todos') }}">Cancelar</a>
+        {{ form.submit(class_="button-primary") }}
+      </div>
+    </form>
+  </section>
+{% endblock %}

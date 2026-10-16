@@ -1,0 +1,33 @@
+.summary-card {
+  min-width: 0;
+  padding: 19px 19px 17px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: linear-gradient(145deg, #171f1a, #141a16);
+  box-shadow: var(--shadow-panel);
+  transition: transform .18s ease, border-color .18s ease;
+}
+
+.summary-card:hover { transform: translateY(-2px); border-color: #3a4b3f; }
+.summary-card__top, .summary-card__footer { display: flex; align-items: center; justify-content: space-between; gap: 9px; }
+.summary-card__label { color: var(--color-text-secondary); font-size: 11px; font-weight: 550; }
+.summary-card__icon { width: 34px; height: 34px; display: grid; flex: 0 0 auto; place-items: center; border-radius: 10px; background: var(--color-primary-soft); color: var(--color-primary); }
+.summary-card__icon svg { width: 17px; height: 17px; }
+.summary-card__value { margin-top: 17px; font-size: clamp(23px, 2vw, 29px); font-weight: 690; letter-spacing: -1.1px; line-height: 1.2; }
+.summary-card__footer { justify-content: flex-start; flex-wrap: wrap; margin-top: 13px; }
+.summary-card__change { display: inline-flex; align-items: center; gap: 3px; color: var(--color-primary); font-size: 10px; font-weight: 650; }
+.summary-card__change svg { width: 13px; height: 13px; }
+.summary-card__change.is-down { color: var(--color-amber); }
+.summary-card__hint { color: var(--color-text-muted); font-size: 10px; }
+.summary-card--blue .summary-card__icon { background: var(--color-blue-soft); color: var(--color-blue); }
+.summary-card--amber .summary-card__icon { background: var(--color-amber-soft); color: var(--color-amber); }
+.summary-card--violet .summary-card__icon { background: var(--color-violet-soft); color: var(--color-violet); }
+
+@media (max-width: 430px) {
+  .summary-card { padding: 15px 13px 14px; }
+  .summary-card__label { max-width: 100px; font-size: 10px; }
+  .summary-card__icon { width: 30px; height: 30px; }
+  .summary-card__value { margin-top: 12px; font-size: 22px; }
+  .summary-card__footer { gap: 5px; margin-top: 10px; }
+  .summary-card__hint { font-size: 9px; }
+}

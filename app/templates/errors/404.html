@@ -1,0 +1,8 @@
+{% extends "errors/error.html" %}
+{% block title %}Página não encontrada{% endblock %}
+{% block breadcrumb %}Página não encontrada{% endblock %}
+{% block content %}
+  {% with code=404, title="Página não encontrada", message="O endereço solicitado não existe ou foi movido." %}
+    {{ super() }}
+  {% endwith %}
+{% endblock %}

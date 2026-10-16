@@ -1,0 +1,26 @@
+<div class="modal-backdrop" id="stock-movement-modal" data-modal hidden>
+  <section class="stock-modal panel" role="dialog" aria-modal="true" aria-labelledby="stock-modal-title" aria-describedby="stock-modal-product">
+    <button class="modal-close" type="button" data-modal-close aria-label="Fechar">&times;</button>
+    <span class="eyebrow"><span class="eyebrow-dot"></span>CONTROLE DE ESTOQUE</span>
+    <h2 id="stock-modal-title">Registrar movimentação</h2>
+    <p class="stock-modal-product" id="stock-modal-product"></p>
+    <p class="stock-modal-current" id="stock-modal-current"></p>
+    <form id="stock-movement-form" class="stock-modal-form" data-async="true">
+      <input type="hidden" name="produto_id">
+      <input type="hidden" name="tipo">
+      <div class="form-field">
+        <label for="stock-modal-quantity">Quantidade</label>
+        <input class="form-control" id="stock-modal-quantity" name="quantidade" type="number" min="1" step="1" required>
+      </div>
+      <div class="form-field">
+        <label for="stock-modal-observation">Observação <span>(opcional)</span></label>
+        <textarea class="form-control" id="stock-modal-observation" name="observacao" maxlength="2000" rows="3" placeholder="Ex.: Reposição do fornecedor"></textarea>
+      </div>
+      <div class="stock-modal-feedback" id="stock-modal-feedback" role="status" aria-live="polite" hidden></div>
+      <div class="stock-modal-actions">
+        <button class="button-secondary" type="button" data-modal-close>Cancelar</button>
+        <button class="button-primary" id="stock-modal-submit" type="submit">Registrar entrada</button>
+      </div>
+    </form>
+  </section>
+</div>

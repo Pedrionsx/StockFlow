@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101714">
+  <title>Entrar | StockFlow</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base/variables.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base/global.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/components/toasts.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/auth.css') }}">
+</head>
+<body class="auth-page">
+  <main class="auth-layout">
+    <section class="auth-intro">
+      <a class="auth-brand" href="{{ url_for('auth.login') }}">
+        <span class="auth-brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="m4 7 8-4 8 4v10l-8 4-8-4V7Z"/><path d="m4 7 8 4 8-4M12 11v10"/></svg>
+        </span>
+        <span>Stock<span>Flow</span></span>
+      </a>
+      <div class="auth-message">
+        <span class="eyebrow"><span class="eyebrow-dot"></span>GESTÃO DE ESTOQUE</span>
+        <h1>Seu estoque,<br><span>sob controle.</span></h1>
+        <p>Uma visão clara do seu negócio começa por aqui. Entre para acompanhar produtos e movimentações.</p>
+      </div>
+      <span class="auth-copyright">© 2026 StockFlow · Controle simples, negócio organizado.</span>
+    </section>
+
+    <section class="auth-panel">
+      <div class="auth-form-wrap">
+        <span class="auth-mobile-brand">Stock<span>Flow</span></span>
+        <span class="auth-form-kicker">BEM-VINDO DE VOLTA</span>
+        <h2>Acesse sua conta</h2>
+        <p class="auth-form-description">Informe suas credenciais para continuar.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% include "components/ui/_toasts.html" %}
+        {% endwith %}
+
+        <form method="post" class="auth-form">
+          {{ form.hidden_tag() }}
+          <div class="form-field">
+            {{ form.email.label }}
+            {{ form.email(class_="form-control", autocomplete="username", type="email", placeholder="voce@empresa.com", autofocus=true) }}
+            {% for error in form.email.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+          </div>
+          <div class="form-field">
+            <div class="form-label-row">
+              {{ form.password.label }}
+            </div>
+            {{ form.password(class_="form-control", autocomplete="current-password", placeholder="Sua senha") }}
+            {% for error in form.password.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+          </div>
+          <label class="remember-option">{{ form.remember() }}<span>Manter conectado</span></label>
+          {{ form.submit(class_="auth-submit") }}
+        </form>
+        <p class="auth-security"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/></svg>Acesso protegido e exclusivo para usuários autorizados.</p>
+      </div>
+    </section>
+  </main>
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="false"></div>
+  <script src="{{ url_for('static', filename='js/components/toasts.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/components/forms.js') }}" defer></script>
+</body>
+</html>

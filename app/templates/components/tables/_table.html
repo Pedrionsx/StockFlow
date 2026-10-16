@@ -1,0 +1,14 @@
+{% macro render_table(headers, rows, empty_message="Nenhum registro encontrado.") -%}
+<div class="table-scroll">
+  <table class="data-table">
+    <thead><tr>{% for header in headers %}<th scope="col">{{ header }}</th>{% endfor %}</tr></thead>
+    <tbody>
+      {% for row in rows %}
+        <tr>{% for cell in row %}<td>{{ cell }}</td>{% endfor %}</tr>
+      {% else %}
+        <tr><td class="table-empty" colspan="{{ headers|length }}">{{ empty_message }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{%- endmacro %}

@@ -1,0 +1,6 @@
+.error-page { min-height: 360px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 6vh auto; padding: 38px 24px; text-align: center; }
+.error-code { color: var(--color-primary); font-size: clamp(60px, 12vw, 112px); font-weight: 750; letter-spacing: -7px; line-height: 1; opacity: .85; }
+.error-page .eyebrow { margin-top: 19px; }
+.error-page h1 { margin: 8px 0 0; font-size: clamp(25px, 4vw, 34px); letter-spacing: -1px; }
+.error-page p { max-width: 450px; margin: 9px 0 23px; color: var(--color-text-secondary); font-size: 13px; }
+.error-page .button-primary { display: inline-flex; justify-content: center; }

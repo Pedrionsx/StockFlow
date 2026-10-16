@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block breadcrumb %}{{ title }}{% endblock %}
+{% block content %}
+  <section class="module-placeholder">
+    <span class="module-placeholder__icon"><svg><use href="#icon-{{ icon }}"/></svg></span>
+    <span class="eyebrow"><span class="eyebrow-dot"></span>EM PREPARAÇÃO</span>
+    <h1>{{ title }}</h1>
+    <p>{{ description }}</p>
+    <a class="button-primary" href="{{ url_for('dashboard.index') }}">Voltar ao dashboard</a>
+  </section>
+{% endblock %}

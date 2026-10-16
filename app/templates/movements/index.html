@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Movimentações{% endblock %}
+{% block breadcrumb %}Movimentações{% endblock %}
+{% block page_styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/movements.css') }}">
+{% endblock %}
+{% block content %}
+  <section class="movement-heading">
+    <div>
+      <span class="eyebrow"><span class="eyebrow-dot"></span>CONTROLE DE ESTOQUE</span>
+      <h1>Movimentações</h1>
+      <p>Registre entradas e saídas e acompanhe cada alteração do estoque.</p>
+    </div>
+  </section>
+
+  <div class="movement-layout">
+    <section class="panel movement-form-panel">
+      <div class="movement-panel-heading">
+        <span class="movement-heading-icon"><svg><use href="#icon-activity"/></svg></span>
+        <div><h2>Nova movimentação</h2><p>O saldo será atualizado junto com o histórico.</p></div>
+      </div>
+      <form id="movement-form" class="movement-form" data-async="true">
+        <div class="form-field">
+          <label for="movement-type">Tipo de operação</label>
+          <div class="movement-type-toggle">
+            <label><input type="radio" name="tipo" value="ENTRADA" checked><span><svg><use href="#icon-arrow-down"/></svg>Entrada</span></label>
+            <label><input type="radio" name="tipo" value="SAIDA"><span><svg><use href="#icon-arrow-up"/></svg>Saída</span></label>
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="movement-product">Produto</label>
+          <select class="form-control form-select" id="movement-product" name="produto_id" required>
+            <option value="">Carregando produtos...</option>
+          </select>
+          <span class="movement-current-stock" id="movement-current-stock">Selecione um produto para consultar o saldo.</span>
+        </div>
+        <div class="form-field">
+          <label for="movement-quantity">Quantidade</label>
+          <input class="form-control" id="movement-quantity" name="quantidade" type="number" min="1" step="1" placeholder="Informe a quantidade" required>
+        </div>
+        <div class="form-field">
+          <label for="movement-observation">Observação <span>(opcional)</span></label>
+          <textarea class="form-control movement-textarea" id="movement-observation" name="observacao" maxlength="2000" rows="3" placeholder="Ex.: Reposição do fornecedor"></textarea>
+        </div>
+        <div class="movement-feedback" id="movement-feedback" role="status" aria-live="polite" hidden></div>
+        <button class="button-primary movement-submit" id="movement-submit" type="submit">Registrar entrada</button>
+        <p class="movement-transaction-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v5c0 5 3.4 8.4 8 10 4.6-1.6 8-5 8-10V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>Estoque e histórico são salvos em uma única transação.</p>
+      </form>
+    </section>
+
+    <section class="panel movement-history-panel">
+      <div class="movement-history-heading">
+        <div><span class="panel-kicker">RASTREABILIDADE</span><h2>Histórico recente</h2></div>
+        <button class="history-refresh" id="history-refresh" type="button" aria-label="Atualizar histórico"><svg><use href="#icon-clock"/></svg></button>
+      </div>
+      <div class="history-filters">
+        <label class="sr-only" for="history-search">Buscar no histórico</label>
+        <input class="form-control" id="history-search" type="search" placeholder="Buscar produto, código ou responsável">
+        <label class="sr-only" for="history-type">Filtrar por operação</label>
+        <select class="form-control form-select" id="history-type">
+          <option value="">Todas as operações</option>
+          <option value="ENTRADA">Entradas</option>
+          <option value="SAIDA">Saídas</option>
+        </select>
+        <div class="history-period-filter" role="group" aria-label="Filtrar por período">
+          <label for="history-date-start">De <input class="form-control" id="history-date-start" type="date"></label>
+          <label for="history-date-end">Até <input class="form-control" id="history-date-end" type="date"></label>
+        </div>
+      </div>
+      <div class="movement-history-scroll">
+        <table class="data-table movement-table">
+          <thead><tr>
+            <th scope="col"><button class="history-sort" type="button" data-sort="produto">Produto <span aria-hidden="true"></span></button></th>
+            <th scope="col"><button class="history-sort" type="button" data-sort="tipo">Operação <span aria-hidden="true"></span></button></th>
+            <th scope="col"><button class="history-sort" type="button" data-sort="quantidade">Quantidade <span aria-hidden="true"></span></button></th>
+            <th scope="col"><button class="history-sort" type="button" data-sort="usuario">Responsável <span aria-hidden="true"></span></button></th>
+            <th scope="col"><button class="history-sort" type="button" data-sort="data">Data <span aria-hidden="true"></span></button></th>
+          </tr></thead>
+          <tbody id="movement-history">
+            <tr><td class="movement-loading" colspan="5">Carregando histórico...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="movement-history-footer">
+        <span id="movement-history-count" aria-live="polite">Carregando histórico...</span>
+        <nav class="history-pagination" aria-label="Paginação do histórico">
+          <button type="button" id="history-previous" aria-label="Página anterior" disabled>Anterior</button>
+          <span id="history-page-indicator">Página 1 de 1</span>
+          <button type="button" id="history-next" aria-label="Próxima página" disabled>Próxima</button>
+        </nav>
+      </div>
+    </section>
+  </div>
+{% endblock %}
+{% block page_scripts %}
+  <script src="{{ url_for('static', filename='js/pages/movements.js') }}" defer></script>
+{% endblock %}
